@@ -25,8 +25,9 @@ while True:
       face_section = cv2.resize(face_section, (100, 100))
       cv2.imshow("Face Section", face_section)
     except Exception as e:
-      print(str(e))
-      continue
+      # print(str(e))
+      print("************error**************")
+      sys.exit()
     i = i + 1
     if i % 10 == 0:
       face_data.append(face_section)
@@ -41,10 +42,9 @@ while True:
 
 face_data = np.asarray(face_data)
 face_data = face_data.reshape((face_data.shape[0], -1))
+print(face_data)
 np.save(data_set + file_name + '.npy', face_data)
 print(face_data.shape)
 
 cap.release()
 cv2.destroyAllWindows()
-
-

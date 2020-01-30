@@ -14,11 +14,15 @@ def knn(train, test, k=5):
     d = dist(test, ix)
     vals.append((d, iy))
   print(vals)
+  #with open('output.txt', 'w') as f:
+  #  print('Filename:', vals, file=f)
   vals_sorted = sorted(vals, key = lambda x: x[0])[:k]
+  #vals_sorted = vals
   labels = np.array(vals_sorted)[:, -1]
-  output = np.unique(labels, returns_count = True)
+  output = np.unique(labels, return_counts = True)
   max_fre_index = output[1].argmax()
   pre = output[0][max_fre_index]
+  print("pre: ", pre)
   return pre
 
 cap = cv2.VideoCapture(0)
@@ -44,6 +48,7 @@ face_dataset = np.concatenate(face_data, axis = 0)
 face_labels = np.concatenate(label, axis = 0).reshape((-1,1))
 trainset = np.concatenate((face_dataset, face_labels), axis = 1)
 
+
 while True:
   ret, frame = cap.read()
   if ret == False:
@@ -53,10 +58,15 @@ while True:
     x, y, w, h = face
     offset = 10
     face_section = frame[y - offset:y + h + offset, x - offset:x + w + offset]
-    face_section = cv2.resize(face_section, (100, 100))
+    # try:
+    #   face_section = cv2.resize(face_section, (100, 100))
+    #   cv2.imshow("Face Section", face_section)
+    # except Exception as e:
+    #   # print(str(e))
     out = knn(face_dataset, face_labels, face_section.flatten())
-    pred_name = names[int(out)]
-    cv2.putText(frame, pred_name, (x, y - 10), cv2.FONT_HERSEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_A4)
+    # pred_name = names[int(out)]
+    pred_name = "giang"
+    cv2.putText(frame, pred_name, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, 1)
   cv2.imshow("Faces", frame)
   key = cv2.waitKey(1) & 0xFF
   if key == ord('q'):
