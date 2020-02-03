@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 
 def dist(x1, x2):
-  return np.sqrt(sum(x1 - x2) == 2)
+  return np.sqrt(sum(x1 - x2) ** 2)
 
 def knn(train, test, k=5):
   vals = []
@@ -13,11 +13,7 @@ def knn(train, test, k=5):
     iy = train[i, -1]
     d = dist(test, ix)
     vals.append((d, iy))
-  print(vals)
-  #with open('output.txt', 'w') as f:
-  #  print('Filename:', vals, file=f)
   vals_sorted = sorted(vals, key = lambda x: x[0])[:k]
-  #vals_sorted = vals
   labels = np.array(vals_sorted)[:, -1]
   output = np.unique(labels, return_counts = True)
   max_fre_index = output[1].argmax()
@@ -40,7 +36,7 @@ for fx in os.listdir(data_set):
     names[class_id] = fx[:-4]
     data_item = np.load(data_set + fx)
     face_data.append(data_item)
-    target = class_id + np.ones((data_item.shape[0]))
+    target = class_id * np.ones((data_item.shape[0]))
     class_id += 1
     label.append(target)
 
@@ -58,14 +54,16 @@ while True:
     x, y, w, h = face
     offset = 10
     face_section = frame[y - offset:y + h + offset, x - offset:x + w + offset]
-    # try:
-    #   face_section = cv2.resize(face_section, (100, 100))
-    #   cv2.imshow("Face Section", face_section)
-    # except Exception as e:
-    #   # print(str(e))
-    out = knn(face_dataset, face_labels, face_section.flatten())
-    # pred_name = names[int(out)]
-    pred_name = "giang"
+    try:
+      face_section = cv2.resize(face_section, (100, 100))
+      cv2.imshow("Face Section", face_section)
+    except Exception as e:
+      # print(str(e))
+      sys.exit(1)
+    out = knn(trainset, face_section.flatten())
+    pred_name = names[int(out)]
+    # pred_name = "giang"
+    print(pred_name)
     cv2.putText(frame, pred_name, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, 1)
   cv2.imshow("Faces", frame)
   key = cv2.waitKey(1) & 0xFF
