@@ -1,5 +1,7 @@
 import cv2
 import numpy as np
+import sys
+
 
 cap = cv2.VideoCapture(0)
 
@@ -27,7 +29,7 @@ while True:
     except Exception as e:
       # print(str(e))
       print("************error**************")
-      sys.exit()
+      #sys.exit()
     i = i + 1
     if i % 10 == 0:
       face_data.append(face_section)

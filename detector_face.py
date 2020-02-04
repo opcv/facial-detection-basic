@@ -1,6 +1,7 @@
 import os
 import cv2
 import numpy as np
+import sys
 
 def dist(x1, x2):
   return np.sqrt(sum(x1 - x2) ** 2)
@@ -58,13 +59,15 @@ while True:
       face_section = cv2.resize(face_section, (100, 100))
       cv2.imshow("Face Section", face_section)
     except Exception as e:
-      # print(str(e))
-      sys.exit(1)
-    out = knn(trainset, face_section.flatten())
-    pred_name = names[int(out)]
-    # pred_name = "giang"
-    print(pred_name)
-    cv2.putText(frame, pred_name, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, 1)
+      print(str(e))
+      #sys.exit(1)
+    try:
+      out = knn(trainset, face_section.flatten())
+      pred_name = names[int(out)]
+      print(pred_name)
+      cv2.putText(frame, pred_name, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, 1)
+    except Exception as e:
+      print(str(e))
   cv2.imshow("Faces", frame)
   key = cv2.waitKey(1) & 0xFF
   if key == ord('q'):
